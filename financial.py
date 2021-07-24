@@ -50,7 +50,6 @@ def findTime(time):
 def getGraph(prices):
     plt.xlabel('Time', fontsize=10)
     plt.ylabel('Price', fontsize=10)
-    print(prices.keys())
     plt.plot(prices.keys(), prices.values())
     plt.show()
     
