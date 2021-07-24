@@ -12,8 +12,18 @@ start_time = time.time()
 
 # Read Kraken API key and secret stored in environment variables
 api_url = "https://api.kraken.com"
-api_key = ''
-api_sec = ''
+api_key = 'RhRFCJId7Xq02cGsODULRlsjcTBkLg0YTfm14b6gJI26pglUuBymnVNh'
+api_sec = 'LpSFAcspsVIu2ioXMtye7/JKF+4Xb83zUEo2wtDLzRE31SR4F3cl0e7+EmsQ1/kmKxF/fZ6ppZcIOzVaGjHHkQ=='
+
+
+def main():
+    # dictionary, key(time) -> value(price)
+    prices = {}
+    # pair, period
+    prices = getPriceForPeriod('ETHUSDT', 10)
+    getGraph(prices)
+    print("--- %s seconds ---" % (time.time() - start_time))
+
 
 # Attaches auth headers and returns results of a POST request
 def kraken_request(uri_path, data, api_key, api_sec):
@@ -37,10 +47,11 @@ def findTime(time):
     return date.strftime('%H:%M')
     
 
-def getGraph(price, curr_time):
-    plt.xlabel('Price', fontsize=10)
-    plt.ylabel('Time', fontsize=10)  
-    plt.plot(curr_time, price)
+def getGraph(prices):
+    plt.xlabel('Time', fontsize=10)
+    plt.ylabel('Price', fontsize=10)
+    print(prices.keys())
+    plt.plot(prices.keys(), prices.values())
     plt.show()
     
     
@@ -51,31 +62,23 @@ def getCurrPrice(pair):
     return price
     
     
-def getPriceForPeriod(pair, freqUpdate, period):
-    prices = []
-    price_time = []
+def getPriceForPeriod(pair, period):
+    prices = {}
     curr = 0
     prev = 0
-    tic = 0
-    while (tic != period):
+    t_end = time.time() + 60 * period
+    while (time.time() < t_end):
         curr = getCurrPrice(pair)
         
-        if curr != prev:
-            prices.append(curr)
-            price_time.append(findTime(time.asctime(time.localtime(time.time()))))
+        #if curr != prev:
+        timestamp = findTime(time.asctime(time.localtime(time.time())))
+        prices[timestamp] = curr 
         
-        prev = curr 
-        
-        time.sleep(freqUpdate)
-        tic += 1
+        #prev = curr
+        time.sleep(1)
+            
+    return prices 
+
     
-    return prices, price_time 
-
-
 if __name__ == '__main__':
-    prices = []
-    times = []
-    prices, times = getPriceForPeriod('ETHUSDT', 2, 100)
-    print(prices)
-    getGraph(prices, times)
-    print("--- %s seconds ---" % (time.time() - start_time))
+    main()
