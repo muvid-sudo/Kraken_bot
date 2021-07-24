@@ -12,8 +12,8 @@ start_time = time.time()
 
 # Read Kraken API key and secret stored in environment variables
 api_url = "https://api.kraken.com"
-api_key = 'RhRFCJId7Xq02cGsODULRlsjcTBkLg0YTfm14b6gJI26pglUuBymnVNh'
-api_sec = 'LpSFAcspsVIu2ioXMtye7/JKF+4Xb83zUEo2wtDLzRE31SR4F3cl0e7+EmsQ1/kmKxF/fZ6ppZcIOzVaGjHHkQ=='
+api_key = ''
+api_sec = ''
 
 
 def main():
