@@ -16,15 +16,6 @@ api_key = ''
 api_sec = ''
 
 
-def main():
-    # dictionary, key(time) -> value(price)
-    prices = {}
-    # pair, period
-    prices = getPriceForPeriod('ETHUSDT', 10)
-    getGraph(prices)
-    print("--- %s seconds ---" % (time.time() - start_time))
-
-
 # Attaches auth headers and returns results of a POST request
 def kraken_request(uri_path, data, api_key, api_sec):
     headers = {}
@@ -50,7 +41,7 @@ def findTime(time):
 def getGraph(prices):
     plt.xlabel('Time', fontsize=10)
     plt.ylabel('Price', fontsize=10)
-    plt.plot(prices.keys(), prices.values())
+    plt.plot(prices.keys(), sorted(prices.values()))
     plt.show()
     
     
@@ -69,14 +60,21 @@ def getPriceForPeriod(pair, period):
     while (time.time() < t_end):
         curr = getCurrPrice(pair)
         
-        #if curr != prev:
         timestamp = findTime(time.asctime(time.localtime(time.time())))
         prices[timestamp] = curr 
         
-        #prev = curr
         time.sleep(1)
             
     return prices 
+
+
+def main():
+    # dictionary, key(time) -> value(price)
+    prices = {}
+    # pair, period
+    prices = getPriceForPeriod('ETHUSDT', 60)
+    getGraph(prices)
+    print("--- %s seconds ---" % (time.time() - start_time))
 
     
 if __name__ == '__main__':
