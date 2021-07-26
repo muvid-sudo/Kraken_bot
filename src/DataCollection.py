@@ -3,13 +3,16 @@ The module is an implementation of data collection.
 """
 import requests
 import json
+import time
 import API as api
 
 
 # Attaches auth headers and returns results of a POST request
 def kraken_request(uri_path, data):
-    headers = {'API-Key': api.api_key, 'API-Sign': get_kraken_signature(uri_path, data, api.api_sec)}
+    headers = {}
+    headers['API-Key'] = api.api_key
     # get_kraken_signature() as defined in the 'Authentication' section
+    headers['API-Sign'] = api.get_kraken_signature(uri_path, data, api.api_sec)
     req = requests.post((api.api_url + uri_path), headers=headers, data=data)
     return req
 
@@ -29,3 +32,15 @@ def get_current_price(pair):
         return price
     except KeyError:
         return -1
+
+
+def get_current_positions():
+    position = kraken_request('/0/private/Balance', {"nonce": str(int(1000*time.time()))})
+    position = json.loads(position.content)
+    return position
+
+
+def get_current_balance(currency):
+    balance = kraken_request('/0/private/TradeBalance', {"nonce": str(int(1000 * time.time())), "asset": currency})
+    balance = json.loads(balance.content)
+    return balance
