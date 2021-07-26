@@ -1,2 +1,1 @@
-# Kraken_bot
-*
+
