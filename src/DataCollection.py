@@ -3,7 +3,6 @@ The module is an implementation of data collection.
 """
 import requests
 import json
-
 import API as api
 
 
@@ -25,9 +24,8 @@ def get_current_price(pair):
     tickers = 'https://api.kraken.com/0/public/Trades?pair=%s'
     data = json.loads(requests.get(tickers % pair).content)
     # Sometimes there is an error that is an absence of key 'result'
-    price = 0
     try:
         price = data['result'][pair][-1][0]
         return price
     except KeyError:
-        return 0
+        return -1
