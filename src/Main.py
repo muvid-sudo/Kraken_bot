@@ -15,7 +15,7 @@ def get_price_period(pair, period):
     prices = []
     t_end = time.time() + 60 * period
 
-    previous_price = -1
+    previous_price = 0
     while time.time() < t_end:
         current_price = float(dc.get_current_price(pair))
 
@@ -36,7 +36,7 @@ if __name__ == '__main__':
     start_time = time.time()
 
     # dictionary, key([time]) -> value([price])
-    quotations = get_price_period('ETHUSDT', 30)
+    quotations = get_price_period('ETHUSDT', 60)
 
     # to show a price graph
     do.get_graph(quotations)
