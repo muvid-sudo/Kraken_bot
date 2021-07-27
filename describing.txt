@@ -1,3 +1,5 @@
+The file is the project description.
+
 Modules:
 1) Data collection - получение актуальных данных с биржи
 - Текущая цена актива;
