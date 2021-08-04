@@ -1,22 +1,22 @@
 The file is the project description.
 
 Modules:
-1) Data collection - получение актуальных данных с биржи
-- Текущая цена актива;
-- Текущая величина баланса;
-- Текущие открытые позиции;
-- Текущие открытые ордеры;
-- Текущие закрытые ордеры;
-- История торговых операций;
-- Информация об ордере;
-- Информация об открытых маржинальных операциях;
-- Информация об объеме торгов актива.
+1) Data collection - obtaining actual data from crypto exchange
+- get_current_price();
+- get_current_balance();
+- get_open_positions();
+- get_open_orders();
+- get_closed_orders();
+- get_previous_orders();
+- get_information_orders();
+- get_information_open_margin_orders();
+- get_information_asset_volume().
 
-2) Data analyzer - подготовка и анализ данных
-2.1) Подготовка данных;
-2.2) Сортировка данных;
-2.3) Анализ данных;
-2.4) Запись данных.
+2) Data analyzer - preparing and analyse data
+2.1) preparing_data;
+2.2) sorting_data;
+2.3) data analyze;
+2.4) record data.
 
 3) Trade strategy - проверка обработанных данных и сигналы
 3.1) Описание и расчет стратегии;
