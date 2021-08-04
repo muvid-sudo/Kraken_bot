@@ -1,45 +1,47 @@
 import time
-from email import utils
 import DataCollection as dc
 import DataOutput as do
+from time import ctime
+from email import utils
+import datetime as dt
+import pandas as pd
+import os
 
 
-def find_time(time):
-    date = utils.parsedate_to_datetime(time)
-    #date.strftime('%d/%b/%Y')
-    return date.strftime('%H:%M')
-
-
-def get_price_period(pair, period):
-    timestamps = []
-    prices = []
-    t_end = time.time() + 60 * period
-    previous_price = 0
-    while time.time() < t_end:
-        current_price = float(dc.get_current_price(pair))
-        timestamp = find_time(time.asctime(time.localtime(time.time())))
-        if current_price != previous_price and current_price > 0:
-            timestamps.append(timestamp)
-            prices.append(current_price)
-        previous_price = current_price
-    time_and_price = {'Time': timestamps, 'Price': prices}
-    return time_and_price
-
-
-def get_open_positions():
-    position = dc.get_current_positions()
-    do.open_position(position)
+def add_data_to_file(path, current_price):
+    df = pd.read_csv(path, 'a+', header=1, names=['time', 'open', 'high', 'low', 'close'])
+    print(df.head)
+    last_time = df.at[df.index[-1],'time']
+    print(last_time, current_price[0])
+    #if int(last_time) < int(current_price[0]):
+    #    df.append(current_price)
+    #    df.to_csv(path, encoding='utf-8', index=False, columns=['time', 'open', 'high', 'low', 'close'], header=True)
 
 
 if __name__ == '__main__':
     start_time = time.time()
 
-    # dictionary, key([time]) -> value([price])
-    #quotations = get_price_period('ETHUSDT', 0.1)
-    # to show a price graph
-    #do.get_graph(quotations)
+    path_to_file = '../Data/price.csv'
+    if not os.path.isfile(path_to_file):
+        prices = open(path_to_file, 'w+')
 
-    get_open_positions()
+    while True:
+        price = dc.pair_price('ETHUSDT')
 
-    #print("Balance:", dc.get_current_balance('USD'))
+        current_price = [
+                price[-1][0],
+                price[-1][1],
+                price[-1][2],
+                price[-1][3],
+                price[-1][4]
+                ]
+
+        if os.path.exists(path_to_file) and os.stat(path_to_file).st_size != 0:
+            add_data_to_file(path_to_file, current_price)
+        else:
+            df = pd.DataFrame(price, columns=['time', 'open', 'high', 'low', 'close', '6', '7', '8'])
+            df = df.drop(columns=['6', '7', '8'])
+            df.to_csv(path_to_file, encoding='utf-8', index=False, columns=['time', 'open', 'high', 'low', 'close'], header=True)
+        time.sleep(30)
+
     print("--- %s seconds ---" % (time.time() - start_time))

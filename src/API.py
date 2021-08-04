@@ -9,8 +9,8 @@ import base64
 
 # Read Kraken API key and secret stored in environment variables
 api_url = "https://api.kraken.com"
-api_key = ''
-api_sec = ''
+api_key = 'ryLjX46KdNpKT1rrgQmAqgyemt+1O8uhP70Sn5w0rnAKHcJvBVQ8T6ej'
+api_sec = 'UZYifPgpFKAUJX1sYprIwh/L7wNmFNyPXV1bUwHbzIjogAndmbmFBbp5kut+wWvbQcGNncLeuSz75Rux39trSA=='
 
 
 def get_kraken_signature(urlpath, data, secret):
