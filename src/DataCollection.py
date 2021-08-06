@@ -4,9 +4,14 @@ The module is an implementation of data collection.
 import requests
 import json
 import time
-import API as api
+#import API as api
 import DataOutput as do
 from tradingview_ta import *
+
+import sys
+sys.path.append('../../TestDataBot')
+import test_api as api
+
 
 
 def ask_bid_info(pair):
