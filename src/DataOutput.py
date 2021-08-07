@@ -1,7 +1,9 @@
 import matplotlib.pyplot as plt
-import pandas as pd
 from time import ctime
 from email import utils
+import pandas as pd
+import shrimpy
+import plotly.graph_objects as go
 
 
 def graph(prices):
@@ -32,3 +34,24 @@ def find_time(time):
     date = utils.parsedate_to_datetime(time)
     # date.strftime('%d/%b/%Y')
     return date.strftime('%H:%M')
+
+
+def get_candle_graph(price):
+    data=[go.Candlestick(x=price['time'],
+        open=price['open'],
+        high=price['high'],
+        low=price['low'],
+        close=price['close'])
+        ]
+    figSignal = go.Figure(data=data)
+    figSignal.show()
+
+
+def some_graph(data):
+    # construct the figure
+
+    fig = go.Figure(data=[go.Candlestick(x=data['time'],
+                                         open=data['open'], high=data['high'],
+                                         low=data['low'], close=data['close'])])
+    # display our graph
+    fig.show()
