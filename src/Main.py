@@ -54,7 +54,7 @@ def collect_price_data(path, pair):
         new_data = get_new_data(current_data, previous_data)
         add_data_to_file(path, new_data)
     else:
-        edit_price_data(current_data)
+        current_data = edit_price_data(current_data)
         current_data.to_csv(path, encoding='utf-8', index=False, columns=['time', 'open', 'high', 'low', 'close'], header=True)
 
 
@@ -62,13 +62,41 @@ if __name__ == '__main__':
     start_time = time.time()
 
     path = create_file('price.csv')
-
+    
+    previous_time = 0
+    count = 1
+    LEMA = 0.0 
     while True:
         collect_price_data(path, 'ETHUSDT')
         data = pd.read_csv(path)
-        FMA, SMA = da.moving_average(data, fast_period=5, slow_period=10)
-        print(da.comparison_ma(FMA, SMA))
+        if count == 1:
+            LEMA = da.CSMA(data, price='close', period=30)
+            count -= 1
+        if int(data['time'].values[-1]) != previous_time:
+            SMA = da.CSMA(data, price='close', period=30)
+            EMA = da.CEMA(data, LEMA, price='close', period=30)
+            LEMA = EMA
+            print('%.2f' % SMA, '%.2f' % EMA)
+        previous_time = int(data['time'].values[-1])
         time.sleep(30)
+
+    
+    #FMA, SMA = da.moving_average(data, fast_period=5, slow_period=10)
+    #MA_1 = da.SMA(data, period=5)
+    #MA_2 = da.SMA(data, period=10)
+    #EMA = da.EMA(data, period=5)
+
+    #l_1 = len(FMA) if len(FMA) > len(SMA) else len(SMA)
+    #l_2 = len(MA_1) if len(MA_1) > len(MA_2) else len(MA_2)
+    #
+    #boundary = l_1 if l_1 > l_2 else l_2 
+    #print('FMA_1', 'FMA_2', 'SMA_1', 'SMA_2', 'EMA', sep='\t')
+    #for value in range(boundary):
+    #    try:
+    #        print('%.2f' % FMA[value], '%.2f' % MA_1[value], '%.2f' % SMA[value], '%.2f' % MA_2[value], '%.2f' % EMA[value], sep='\t')
+    #    except KeyError:
+    #        continue
+    #print(da.comparison_ma(FMA, SMA))
 
     # do.some_graph(data)
        #do.get_candle_graph(data)
