@@ -31,5 +31,103 @@ def comparison_history_ma(FMA, SMA, data):
             print('buy', data['open'].values[value])
         
 
-def get_moving_average(data, price='open', fast_period=10, slow_period=30):
-    pass
+# The method builds historical simple moving average
+def HSMA(data, price='open', period=10):
+    SMA = [0 for i in range(period - 1)]
+    
+    average_val = 0
+    num_of_rows = len(data[price].values)
+
+    for ind in range(num_of_rows):
+        price_sum  = 0
+        
+
+        for count in range(period):
+            if ind + count >= num_of_rows:
+                #average_val = price_sum / period
+                #SMA.append(average_val)
+                break
+            price_sum += data[price].values[ind + count] 
+
+        average_val = price_sum / period
+        SMA.append(average_val)
+
+    return SMA
+
+
+# The method builds historical expotential moving average
+def HEMA(data, price='open', period=10, smoothing_factor=2):
+    sum_value = 0.0
+    SMA = 0.0
+    num_of_rows = len(data[price].values)
+    
+    for ind in range(period):
+        sum_value += data[price].values[ind]
+        SMA = sum_value / period
+            
+    EMA = [0 for i in range(period - 1)]
+    EMA.append(SMA)
+
+    smoothing = smoothing_factor / period + 1
+    
+    average_val = 0
+    num_of_rows = len(data[price].values)
+
+    for ind in range(period, num_of_rows):
+        EMA.append((data[price].values[ind] * smoothing) + EMA[ind - 1] * (1 - smoothing))
+
+    return EMA
+
+
+# The method builds a current moving average.
+def CSMA(data, price='open', period=10):
+    SMA = 0.0
+
+    num_of_rows = len(data)
+    learned_start = num_of_rows - period
+
+    prices_sum = 0.0
+    for val in range(learned_start, num_of_rows):
+        prices_sum += data[price].values[val]
+
+    SMA = prices_sum / period
+
+    return SMA 
+
+
+def CEMA(data, LEMA, price='open', period=10, smoothing=2):
+    EMA = 0.0
+
+    num_of_rows = len(data)
+    learned_start = num_of_rows - period
+
+    smoothing_factor = smoothing / period + 1
+
+    EMA = (data[price].values[-1] * smoothing_factor) + LEMA * (1 - smoothing_factor)
+
+    return EMA
+'''
+period = 5
+
+0   1   2   3   4   5   6   7   8   9
+1   2   3   4   5   6   7   8   9   10
+
+head = 0
+
+start_ind = 0
+end_ind = 4
+
+current_sum = 1 + 2 + 3 + 4 + 5
+average_sum = 10 / period
+
+last_sum = price_sum # 10
+head = 4
+
+start_ind = 5
+end_ind = 9
+
+price_sum = 6 + 7 + 8 + 9 + 10 
+
+
+
+'''
