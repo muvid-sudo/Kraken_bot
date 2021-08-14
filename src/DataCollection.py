@@ -44,8 +44,8 @@ string  <vwap>
 string  <volume> 
 int     <count>
 '''
-def get_pair_price(pair):
-    resp = requests.get('https://api.kraken.com/0/public/OHLC?pair=%s' % pair)
+def get_pair_price(pair, interval):
+    resp = requests.get('https://api.kraken.com/0/public/OHLC?pair=%s&interval=%d' % (pair, interval))
     return resp.json()['result'][pair]
 
 
@@ -88,18 +88,19 @@ def get_account_balance():
     return position.json()['result']
 
 '''
-    The method will return an exchange rate of specified pair
+    The method returns an exchange rate of specified pair
 '''
 def exchange_rate(source_currency='USD', target_currency='RUB'):
     c = CurrencyRates()
     return c.get_rate(source_currency, target_currency)
 
-
+'''
+    THe method returns 
+'''
 def get_current_price(pair):
     tickers = 'https://api.kraken.com/0/public/Trades?pair=%s'
     data = json.loads(requests.get(tickers % pair).content)
     return data['result']
-
 
 
 '''
@@ -120,34 +121,4 @@ misc        Comma delimited list of miscellaneous info:
 def get_historical_orders():
     previous_orders = api.kraken_request('/0/private/TradesHistory', {"nonce": str(int(1000*time.time())), "trades": True})
     return previous_orders.json()['result']['trades']
-
-
-def get_open_orders():
-    open_orders = api.kraken_request('/0/private/OpenOrders', {"nonce": str(int(1000 * time.time())), "trades": True})
-    open_orders = json.loads(open_orders.content)
-    return open_orders
-
-
-def get_closed_orders():
-    closed_orders = api.kraken_request('/0/private/ClosedOrders', {"nonce": str(int(1000 * time.time())), "userref": 36493663})
-    closed_orders = json.loads(closed_orders.content)
-    return closed_orders
-
-
-def get_information_order(order_id):
-    order_info = api.kraken_request('/0/private/QueryTrades', {"nonce": str(int(1000*time.time())), "txid": order_id, "trades": True})
-    order_info = json.loads(order_info.content)
-    return order_info
-
-
-def get_open_margin_positions():
-    order_info = api.kraken_request('/0/private/OpenPositions', {"nonce": str(int(1000*time.time())), "docalcs": True})
-    order_info = json.loads(order_info.content)
-    return order_info
-
-
-def pair_price(pair):
-    tickers = 'https://api.kraken.com/0/public/Trades?pair=%s'
-    data = json.loads(requests.get(tickers % pair).content)
-    return data['result'][pair]
 
