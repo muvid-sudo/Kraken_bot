@@ -1,3 +1,22 @@
+import os
+import pandas as pd
+
+
+def write_file(path, data, headers):
+    if os.stat(path).st_size != 0:
+        stored_data = pd.read_csv(path)
+        new_data = stored_data.append(data)
+        new_data.drop_duplicates(subset=new_data.columns.values[0], keep='last', inplace=True)
+        new_data.to_csv(path, encoding='utf-8', index=False, columns=headers, header=True)
+    else:
+        data.to_csv(path, encoding='utf-8', index=False, columns=headers, header=True)
+
+
+def creation_or_updation_table_file(filename, data, headers):
+    data = pd.DataFrame(data, columns=headers)
+    path = create_file(filename)
+    new_data = data
+    write_file(path, data, headers)
 
 
 # The method creates a new file with specified name on a special folder
@@ -10,17 +29,6 @@ def create_file(filename):
 
 # The method compares current data and previous data and creates additional new data
 def get_new_data(curr_data, prev_data):
-    curr_data = edit_price_data(curr_data)
 
-    data = []
 
-    length_prev = len(prev_data)
-    length_curr = len(curr_data)
-
-    start = length_prev - length_curr
-
-    for row in range(length_curr):
-        if prev_data.values[start + row][0] != curr_data.values[row][0] and prev_data.values[start + row][0] < curr_data.values[row][0]:
-            data.append(curr_data.values[row])
-
-    return data
+    return new_data
