@@ -77,25 +77,3 @@ def HEMA(data, price='open', period=10, smoothing_factor=2):
     return EMA
 
 
-# The method builds a current moving average.
-def SMA(data, price='open', period=10):
-    SMA = 0.0
-
-    num_of_rows = len(data)
-    learned_start = num_of_rows - period
-
-    average_val_for_period = sum(data[price].values[learned_start:num_of_rows]) / period
-    SMA = average_val_for_period
-
-    return SMA 
-
-# The method builds a current exponential moving average
-def CEMA(data, LEMA, price='open', period=10, smoothing=2):
-    EMA = 0.0
-
-    num_of_rows = len(data)
-    smoothing_factor = smoothing / period + 1
-
-    EMA = (data[price].values[-1] * smoothing_factor) + LEMA * (1 - smoothing_factor)
-
-    return EMA
