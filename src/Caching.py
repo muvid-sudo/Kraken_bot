@@ -26,9 +26,3 @@ def create_file(filename):
         price = open(path, 'w+')
     return path 
 
-
-# The method compares current data and previous data and creates additional new data
-def get_new_data(curr_data, prev_data):
-
-
-    return new_data
