@@ -1,3 +1,4 @@
+import pandas as pd
 import DataCollection as dc
 
 
@@ -48,8 +49,8 @@ string - high
 string - low
 string - close
 '''
-def get_ohlc(pair):
-    ohlc = dc.get_pair_price(pair)
+def get_ohlc(pair, interval):
+    ohlc = dc.get_pair_price(pair, interval)
     ohlc = pd.DataFrame(ohlc, columns=['time', 'open', 'high', 'low', 'close', '6', '7', '8'])
     ohlc = ohlc.drop(columns=['6', '7', '8'])
     return ohlc 
