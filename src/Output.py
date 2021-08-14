@@ -19,7 +19,7 @@ def print_orders(table):
 def print_position_table(table):
     print('{:<3}|{:>15}|{:>15}|'.format('#', 'currence', 'amount'))
     #print('{:<3}|{:>15}|{:>15}|{:>15}|'.format('#', 'currence', 'amount', 'amount (usd)'))
-    count = 0
+    count = 1
     for val in table:
         print('{:<3d}|{:>15}|{:>15.2f}|'.format(count, val[0], float(val[1])))
         #print('{:<3d}|{:>15}|{:>15.2f}|{:>15.2f}'.format(count, val[0], float(val[1]), val[2]))
@@ -31,14 +31,6 @@ def graph(prices):
     df = pd.DataFrame(df, columns={'Price', 'Time'})
     df.plot(x='Time', y='Price')
     plt.show()
-
-
-def print_open_position(position):
-    print('Current positions:')
-    for asset in position['result']:
-        number = f"{float(position['result'][asset]):<-5}"
-        text = '{:<4s}{:<2s}{:s}'
-        print(text.format(asset, ':', number))
 
 
 def print_order(order):
@@ -75,3 +67,10 @@ def some_graph(data):
                                          low=data['low'], close=data['close'])])
     # display our graph
     fig.show()
+
+
+
+def print_smth(data):
+    data['time'] = pd.to_datetime(data['time'], unit='s')
+    data.set_index('time', inplace=True)
+    print(data)
