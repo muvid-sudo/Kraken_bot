@@ -1,13 +1,46 @@
 import DataAnalyse as da
 import DataPreprocessor as dp
 
+from Simulation import Simulation as sm
+from Position import Position as pos
 
+def creation_of_order(budget, share_of_order, signal, pair):
+    if share_of_order > 0 and share_of_order <= 100:
+        share_of_order /= 100
+    elif share_of_order < 0 and share_of_order > 100:
+        share_of_order = 0.5
+
+    amount_of_cash = budget * share_of_order 
+
+    if signal == -1:
+        type_ = 'sell'
+    else:
+        type_ = 'buy'
+
+    price = float(dp.get_ask_price(pair))
+    volume = amount_of_cash / price
+    time = dp.get_current_server_time()
+    time = dp.convert_unixtime(float(time))
+
+    #print('pair: %s' % pair, 'price: %s' % price, 'volume: %s' % volume, 'type: %s' % type_, 'Amount: %s' % amount_of_cash, 'time: %s' % time, sep='\n')
+
+    position = pos(pair, price, volume, type_, 'limit', time, amount_of_cash)
+ 
+    return position
+
+
+'''
+    The method returns a signal about intersection SMAs:
+-1: SELL
++1: BUY
+0:  NOTHING
+'''
 def comparison_ma(lv_ssma, cv_ssma, lv_fsma, cv_fsma):
     if lv_fsma > lv_ssma and cv_ssma > cv_fsma:
-        print('Sell')
+        return -1
     elif lv_fsma < lv_ssma and cv_fsma > cv_ssma:
-        print('Buy')
-    return '' 
+        return 1
+    return 0 
     
 
 # The method builds a current moving average.
