@@ -2,13 +2,17 @@ import pandas as pd
 import DataCollection as dc
 
 
+def convert_unixtime(unixtime):
+    return datetime.datetime.fromtimestamp(float(unix_time))
+
+
 '''
     The method returns current server's time
 returns: date time
 '''
 def get_current_server_time():
     unix_time = dc.get_server_time()['unixtime']
-    return datetime.datetime.fromtimestamp(int(unix_time))
+    return convert_unixtime(unix_time)
 
 
 def get_equivalent_balance(currency):
