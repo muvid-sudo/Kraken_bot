@@ -6,12 +6,8 @@ import json
 import time
 import datetime
 from forex_python.converter import CurrencyRates
+import API as api
 
-#import API as api
-
-import sys
-sys.path.append('../../TestDataBot')
-import test_api as api
 
 
 '''
