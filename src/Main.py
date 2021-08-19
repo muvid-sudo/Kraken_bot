@@ -10,17 +10,24 @@ if __name__ == '__main__':
     start_time = time.time()
 
     previous_time = 0
-    SSMA = []
-    FSMA = []
+    SF_SMA = []
+    prev_ssma = 0
+    prev_fsma = 0
     while True:
         ohlc = dp.get_ohlc('ETHUSDT', 1)
 
-        cache.creation_or_updation_table_file('ETH1_price.csv', ohlc, ['time', 'open', 'high', 'low', 'close'])
+        cache.creation_or_updation_table_file('ETH_price.csv', ohlc, ['time', 'open', 'high', 'low', 'close'])
     
         if ohlc['time'].values[-1] != previous_time:
-            SSMA.append(ts.SMA(ohlc, 'close', 120))
-            FSMA.append(ts.SMA(ohlc, 'close', 60))
-            cache.creation_or_updation_table_file('ETH_sma_120m.csv', SSMA, ['SMA_120'])
+            SSMA = ts.SMA(ohlc, 'close', 120)
+            FSMA = ts.SMA(ohlc, 'close', 60)
+            ts.comparison_ma(prev_ssma, SSMA, prev_fsma, FSMA)
+            prev_ssma = SSMA
+            prev_fsma = FSMA
+            SF_SMA.append([SSMA, FSMA])
+            cache.creation_or_updation_table_file('ETH_SMA.csv', SF_SMA, ['SMA_120', 'SMA_60'])
+        if len(SF_SMA) == 1000:
+            SF_SMA.clear()
         previous_time = ohlc['time'].values[-1]
         time.sleep(30)
 
