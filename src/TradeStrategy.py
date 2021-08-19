@@ -2,6 +2,14 @@ import DataAnalyse as da
 import DataPreprocessor as dp
 
 
+def comparison_ma(lv_ssma, cv_ssma, lv_fsma, cv_fsma):
+    if lv_fsma > lv_ssma and cv_ssma > cv_fsma:
+        print('Sell')
+    elif lv_fsma < lv_ssma and cv_fsma > cv_ssma:
+        print('Buy')
+    return '' 
+    
+
 # The method builds a current moving average.
 def SMA(data, price='open', period=10):
     SMA = 0.0
