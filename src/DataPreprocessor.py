@@ -1,9 +1,10 @@
 import pandas as pd
 import DataCollection as dc
+import datetime
 
 
 def convert_unixtime(unixtime):
-    return datetime.datetime.fromtimestamp(float(unix_time))
+    return datetime.datetime.fromtimestamp(float(unixtime))
 
 
 '''
@@ -12,7 +13,7 @@ returns: date time
 '''
 def get_current_server_time():
     unix_time = dc.get_server_time()['unixtime']
-    return convert_unixtime(unix_time)
+    return unix_time
 
 
 def get_equivalent_balance(currency):
