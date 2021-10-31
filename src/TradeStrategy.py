@@ -35,12 +35,12 @@ def creation_of_order(budget, share_of_order, signal, pair):
 +1: BUY
 0:  NOTHING
 '''
-def comparison_ma(lv_ssma, cv_ssma, lv_fsma, cv_fsma):
-    if lv_fsma > lv_ssma and cv_ssma > cv_fsma:
+def comparison_ma(prev_slow, curr_slow, prev_fast, curr_fast):
+    if prev_fast > curr_fast and curr_fast < curr_slow:
         return -1
-    elif lv_fsma < lv_ssma and cv_fsma > cv_ssma:
+    elif prev_fast < curr_fast and curr_fast > curr_slow:
         return 1
-    return 0 
+    return 0
     
 
 # The method builds a current moving average.
