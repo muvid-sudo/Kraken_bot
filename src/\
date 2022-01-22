@@ -1,0 +1,234 @@
+import configparser
+import requests
+import urllib.parse
+import hashlib
+import hmac
+import base64
+import time
+
+
+QUERY = {
+# MARKET DATA
+    'get_server_time' : '/0/public/Time',
+    'get_system_status' : '/0/public/SystemStatus',
+    'get_asset_info' : '/0/public/Assets',
+    'get_tradable_info' : '/0/public/AssetPairs',
+    'get_ticker_info' : '/0/public/Ticker',
+    'get_ohlc_info' : '/0/public/OHLC',
+    'get_order_book' : '/0/public/Depth', 
+    'get_recent_trades' : '/0/public/Trades',
+    'get_recent_spreads' : '/0/public/Spread',
+# USER DATA
+    'get_account_balance' : '/0/private/Balance',
+    'get_trade_balance' : '/0/private/TradeBalance',
+    'get_open_orders' : '/0/private/OpenOrders',
+    'get_closed_orders' : '/0/private/ClosedOrders',
+    'get_orders_info' : '/0/private/QueryOrders',
+    'get_trades_history' : '/0/private/TradesHistory',
+    'get_trades_info' : '/0/private/QueryTrades',
+    'get_open_positions' : '/0/private/OpenPositions',
+    'get_ledgers_info' : '/0/private/Ledgers',
+    'get_ledgers' : '/0/private/QueryLedgers',
+    'get_trade_volume' : '/0/private/TradeVolume'
+
+}
+
+
+class KrakenAccount:
+
+
+    def __init__(self):
+       
+        config = configparser.ConfigParser()
+        config.read('config.ini')
+
+        self.URL = config['KRAKEN_API']['api_url']
+        self.PbK = config['KRAKEN_API']['api_key']
+        self.PrK = config['KRAKEN_API']['api_sec']
+
+
+    def get_kraken_signature(urlpath, data, secret):
+        postdata = urllib.parse.urlencode(data)
+        encoded = (str(data['nonce']) + postdata).encode()
+        message = urlpath.encode() + hashlib.sha256(encoded).digest()
+
+        mac = hmac.new(base64.b64decode(secret), message, hashlib.sha512)
+        sigdigest = base64.b64encode(mac.digest())
+        return sigdigest.decode()
+
+
+    # Attaches auth headers and returns results of a POST request
+    def _kraken_request(self, method_name, params=None, data=None):
+        url_path = QUERY[method_name]
+
+        if data == None:
+            data = {
+                    'nonce' : str(int(1000 * time.time()))
+            }
+        else:
+            data['nonce'] = str(int(1000 * time.time())) 
+
+        headers = {
+                'API-Key': self.PbK, 
+                'API-Sign': KrakenAccount.get_kraken_signature(url_path, data, self.PrK)
+        }
+
+        # get_kraken_signature() as defined in the 'Authentication' section
+        url = self.URL + url_path
+
+        if url_path.count('private'):
+            req = requests.post(url, headers=headers, data=data, params=params)
+        else:
+            req = requests.get(url, params=params)
+
+        return req.json()
+
+    
+
+
+    ''' MARKET DATA '''
+
+    def get_server_time(self):
+        method_name = self.get_server_time.__name__
+        response = self._kraken_request(method_name)
+        return response 
+
+    def get_system_status(self):
+        method_name = self.get_system+_status.__name__
+        response = self._get_response(method_name)
+        return response 
+
+
+    def get_asset_info(self):
+        method_name = self.get_asset_info.__name__
+        response = self._get_response(method_name)
+        return response 
+
+
+    def get_tradable_info(self, pair):
+        method_name = self.get_tradable_info.__name__
+        params = {
+                'pair' : pair
+        }
+        response = self._kraken_request(method_name, params)
+        return response 
+
+
+    def get_ticker_info(self, pair):
+        method_name = self.get_ticker_info.__name__
+        params = {
+                'pair' : pair
+        }
+        response = self._get_response(method_name, params)
+        return response 
+
+
+    def get_ohlc_info(self, pair, interval, since):
+        method_name = self.get_ohlc_info.__name__
+        params = {
+                'pair' : pair,
+                'interval' : interval,
+                'since' : since
+        }
+        response = self._get_response(method_name, params)
+        return response 
+
+    
+    def get_order_book(self, pair, count=100):
+        method_name = self.get_order_book.__name__
+        params = {
+                'pair' : pair,
+                'count' : count
+        }
+        response = self._get_response(method_name, params)
+        return response 
+
+
+    def get_recent_trades(self, pair, since):
+        method_name = self.get_recent_trades.__name__
+        params = {
+                'pair' : pair,
+                'since' : since
+        }
+        response = self._get_response(method_name, params)
+        return response
+
+
+    def get_recent_spreads(self, pair, since):
+        method_name = self.get_recent_spreads.__name__
+        params = {
+                'pair' : pair,
+                'since' : since
+        }
+        response = self._get_response(method_name, params)
+        return response
+    
+
+    ''' USER DATA '''
+
+    def get_account_balance(self):
+        method_name = self.get_account_balance.__name__
+        response = self._kraken_request(method_name)
+        return response
+
+
+    def get_trade_balance(self, asset):
+        method_name = self.get_trade_balance.__name__
+        data = {
+                'asset' : asset
+        }
+        response = self._kraken_request(method_name, data=data)
+        return response
+
+
+    def get_open_orders(self, trades=True):
+        method_name = self.get_open_balance.__name__
+        data = {
+                'trades' : trades
+        }
+        response = self._kraken_request(method_name, data=data)
+        return response
+
+
+    def get_closed_orders():
+        pass
+
+    def get_orders_info():
+        pass
+
+    #def get_trades_history' : '/0/private/TradesHistory',
+    #def get_trades_info' : '/0/private/QueryTrades',
+    #def get_open_positions' : '/0/private/OpenPositions',
+    #def get_ledgers_info' : '/0/private/Ledgers',
+    #def get_ledgers' : '/0/private/QueryLedgers',
+    #def get_trade_volume' : '/0/private/TradeVolume'
+if __name__ == '__main__':
+
+    account = KrakenAccount()
+    
+    #trade_balance = account.get_trade_balance('USD')
+
+    #print(trade_balance)
+
+    #print(account.get_server_time())
+
+    #print(account.get_asset_info())
+
+    #print(account.get_tradable_info('AAVEUSD'))
+
+    #answer = account.get_ticker_info('BTCUSD')
+    #print(answer)
+
+    #print(account.get_ohlc_info('BTCUSD', 5, 0))
+
+    #print(account.get_order_book('BTCUSD', 5))
+
+    #print(account.get_recent_trades('BTCUSD', 0))
+
+    #print(account.get_recent_spreads('BTCUSD', 0))
+
+    #print(account.get_account_balance())
+
+    #print(account.get_trade_balance('USD'))
+
+    print(account.get_open_orders(False))

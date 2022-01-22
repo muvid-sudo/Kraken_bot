@@ -1,9 +1,8 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-import DataCollection as dc
 import DataPreprocessor as dp
 
-
+'''
 def get_list_unique_items(table, column):
     pairs = []
 
@@ -77,3 +76,4 @@ def HEMA(data, price='open', period=10, smoothing_factor=2):
     return EMA
 
 
+'''
